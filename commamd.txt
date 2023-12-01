@@ -1,0 +1,13 @@
+git init 初始化 git，只有初始化了以後才可以使用 git 相關命令。
+git clone 獲取遠端專案，並下載到本地。 遠端庫的位址在 GITHUB 專案中會有提供。
+git status 查看本地修改與伺服器的差異。
+git add . 將這些差異檔添加，這樣就可以提交了。
+git commit –m “這裡是註釋” 提交更改到伺服器。
+git checkout master 更改到master庫。
+git pull 將伺服器最新的更改獲取到本地。
+git merge local master 將本地的local合併到遠端的master上。
+git push origin master 正式提交到遠端的master伺服器上。
+還有“git tag”，“git diff”，“git show”，“git log”，“git remote”等。
+————————————————
+版权声明：本文为CSDN博主「程序员_大白」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/Python_0011/article/details/131755188
