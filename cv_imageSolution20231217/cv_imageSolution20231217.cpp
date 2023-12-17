@@ -5,6 +5,7 @@
 #include <opencv2/opencv.hpp>
 #include "p201_commonUtil.h"
 #include "p203_commonUtil.h"
+#include "p204_commonUtil.h"
 
 using namespace std;
 using namespace cv;
@@ -448,6 +449,280 @@ int main(int argc, char** argv)
         break;
     }
 
+    case 11:
+    {
+        string fileName;
+        cout << "Please assign the full path of 1st image file to be read:\t";
+        cin >> fileName;
+
+        string gileName;
+        cout << "Please assign the full path of 2nd image file to be read:\t";
+        cin >> gileName;
+
+        if ((!haveImageReader(fileName)) || (!haveImageReader(gileName)))
+        {
+            cerr << "At least one file is not parsable for openCV. Bye" << endl;
+        }
+        else
+        {
+            Mat image_buffer = imread(fileName);
+            Mat jmage_buffer = imread(gileName);
+
+            if ((image_buffer.data == nullptr) || (image_buffer.empty()) || (jmage_buffer.data == nullptr) || (jmage_buffer.empty()))
+            {
+                cerr << "At least one file is not readable for openCV. Bye" << endl;
+            }
+            else
+            {
+                Mat mergedImage;
+                bool ret = p203_commonUtil::mergeImage(image_buffer, jmage_buffer, mergedImage);
+
+                if (!ret)
+                {
+                    cerr << "Merging image failed for " << fileName << " and " << gileName << endl;
+                }
+                else
+                {
+                    imshow("Merged Image", mergedImage);
+                    waitKey(0);
+                    destroyAllWindows();
+                }
+            }
+        }
+        break;
+    }
+    case 12:
+    {
+        string filename; 
+        cout << "Please assign the  full path of image file to be read:\t";
+        cin >> filename;
+        if (!haveImageReader(filename)) {
+            cerr << "The file is not parsable for openCV:\t" << filename << endl;
+        }
+        else {
+            Mat image_buffer = imread(filename);
+            if (image_buffer.data == nullptr || image_buffer.empty()) {
+                cerr << "The file is not readable for openCV:\t" << filename << endl;
+            }
+            else {
+                Mat negativeImage;
+                bitwise_not(image_buffer, negativeImage);
+                imshow("Negative Image", negativeImage);
+                waitKey(0);
+                destroyAllWindows();
+            }
+        }
+        break;
+    }
+    case 13:
+    {
+        uint16_t  r = 0, g = 0, b = 0, i = 0, j = 0;
+        const int cols = 1, rows = 1;
+        Mat pixel, hsv_array;
+        cout << "Please assign the degree of Red(0~255):  \t";
+        cin >> r;
+        cout << "Please assign the degree of Green(0~255):\t";
+        cin >> g;
+        cout << "Please assign the degree of Bule(0~255):\t";
+        cin >> b;
+        
+        pixel = Mat(rows, cols, CV_8UC3, Scalar(b, g, r));
+        cvtColor(pixel, hsv_array, COLOR_BGR2HSV_FULL);
+        cout << "The info of HSV image: depth = " << hsv_array.depth() << ", channel size = " << hsv_array.channels() << endl;
+        for (i = 0; i != hsv_array.rows; ++i) {
+            for (j = 0; j != hsv_array.cols; ++j) {
+                cout << "pixel item:\t{H = " << static_cast<uint16_t>(hsv_array.at<Vec<uint8_t, 3>>(i, j)[0]) * 360 / 256;
+                cout << ", S = " << static_cast<double>(hsv_array.at<Vec<uint8_t, 3>>(i, j)[1]+1) / 256.0  * 100.0;
+                cout << "%, V = " << static_cast<double>(hsv_array.at<Vec<uint8_t, 3>>(i, j)[2]+1) / 256.0 * 100.0 << "%}," << endl;;
+            }
+        }
+        break;
+    }
+    case 14:
+    {
+        string filename;
+        cout << "Please assign the full path of image file to be read:\t";
+        cin >> filename;
+        if (!haveImageReader(filename)) {
+            cerr << "The file is not parsable for openCV:\t" << filename << endl;
+        }
+        else {
+            Mat image_buffer = imread(filename);
+            if (image_buffer.data == nullptr || image_buffer.empty()) {
+                cerr << "The file is not readable for openCV:\t" << filename << endl;
+            }
+            else {
+                Mat grayscaleImage;
+                cvtColor(image_buffer, grayscaleImage, COLOR_BGR2GRAY);
+                cout << "The info grayscaled image: depth = " << grayscaleImage.depth() << ", channel size = " << grayscaleImage.channels() << endl;
+                imshow("Grayscale of " + filename, grayscaleImage);
+                waitKey(0);
+                destroyAllWindows();
+            }
+            
+        }
+        break;
+    }
+    case 15: 
+    {
+        string fileName;
+        cout << "Please assign the full path of image file to be read:\t";
+        cin >> fileName;
+
+        if (!haveImageReader(fileName))
+        {
+            cerr << "The file is not parsable for openCV:\t" << fileName << endl;
+        }
+        else
+        {
+            Mat image_buffer = imread(fileName);
+
+            if ((image_buffer.data == nullptr) || (image_buffer.empty()))
+            {
+                cerr << "The file is not readable for openCV:\t" << fileName << endl;
+            }
+            else
+            {
+                uint32_t angle;
+                Mat rotated_image;
+                cout << "Please assign the angle to be rotated counter-wise (90, 270, 180 otherwise):\t";
+                cin >> angle;
+                switch (angle)
+                {
+                case 90:
+                    rotate(image_buffer, rotated_image, ROTATE_90_CLOCKWISE);
+                    break;
+                case 270:
+                    rotate(image_buffer, rotated_image, ROTATE_90_COUNTERCLOCKWISE);
+                    break;
+                default:
+                    rotate(image_buffer, rotated_image, ROTATE_180);
+                    break;
+                }
+                imshow("Rotated image", rotated_image);
+                waitKey(0);
+                destroyAllWindows();
+            }
+        }
+        break;
+   
+    }
+    case 16:
+    {
+        string fileName;
+        cout << "Please assign the full path of image file to be read:\t";
+        cin >> fileName;
+
+        if (!haveImageReader(fileName))
+        {
+            cerr << "The file is not parsable for openCV:\t" << fileName << endl;
+        }
+        else
+        {
+            Mat image_buffer = imread(fileName);
+
+            if ((image_buffer.data == nullptr) || (image_buffer.empty()))
+            {
+                cerr << "The file is not readable for openCV:\t" << fileName << endl;
+            }
+            else
+            {
+                vector< Point_<float> > srcEdge = vector< Point_<float> >();
+                vector< Point_<float> > dstEdge = vector< Point_<float> >();
+                Mat mappingMatrix, calibrated_buffer;
+                time_t nowTime = time(nullptr);
+                string targetPath, fileName_calibrated;
+                cout << "Please assign the dir/path storing the calibrated images, ended with \"\\\":\t";
+                cin >> targetPath;
+
+                fileName_calibrated = string(targetPath) + string("calibrated_") + to_string(nowTime) + string(".jpg");
+
+                if ((image_buffer.cols != (P204_DEFAULT_CARLABEL_SIZE_WIDTH)) || (image_buffer.rows != P204_DEFAULT_CARLABEL_SIZE_HEIGHT))
+                {
+                    resize(image_buffer, image_buffer, Size(P204_DEFAULT_CARLABEL_SIZE_WIDTH, P204_DEFAULT_CARLABEL_SIZE_HEIGHT));
+                }
+
+                srcEdge.push_back(Point_<float>(30.0, 95.0));
+                srcEdge.push_back(Point_<float>(86.0, 311.0));
+                srcEdge.push_back(Point_<float>(450.0, 175.0));
+                srcEdge.push_back(Point_<float>(426.0, 11.0));
+                dstEdge.push_back(Point_<float>(56.0, 50.0));
+                dstEdge.push_back(Point_<float>(56.0, 273.0));
+                dstEdge.push_back(Point_<float>(444.0, 273.0));
+                dstEdge.push_back(Point_<float>(444.0, 50.0));
+                mappingMatrix = getPerspectiveTransform(srcEdge, dstEdge);
+                warpPerspective(image_buffer, calibrated_buffer, mappingMatrix, Size(image_buffer.cols, image_buffer.rows));
+                imshow("Skewed image: " + fileName, image_buffer);
+                waitKey(0);
+                imshow("Calibrated image of " + fileName, calibrated_buffer);
+                waitKey(0);
+                destroyAllWindows();
+                imwrite(fileName_calibrated, calibrated_buffer);
+                cout << "Exporting the Calibrated image file to " << fileName_calibrated << " DONE." << endl;
+            }
+        }
+        break;
+    }
+    case 17: 
+    {
+
+        string fileName;
+        cout << "Please assign the full path of image file to be read:\t";
+        cin >> fileName;
+
+        if (!haveImageReader(fileName))
+        {
+            cerr << "The file is not parsable for openCV:\t" << fileName << endl;
+        }
+        else
+        {
+            Mat image_buffer = imread(fileName);
+
+            if ((image_buffer.data == nullptr) || (image_buffer.empty()))
+            {
+                cerr << "The file is not readable for openCV:\t" << fileName << endl;
+            }
+            else
+            {
+                int i = 0, j = 0;
+                Mat cropped_buffer, grayscale_buffer, boolean_buffer;
+                time_t nowTime = time(nullptr);
+                string targetPath, fileName_boolean;
+                cout << "Please assign the dir/path storing the cropped images, ended with \"\\\":\t";
+                cin >> targetPath;
+
+                fileName_boolean = string(targetPath) + string("boolean_") + to_string(nowTime) + string(".jpg");
+
+                if ((image_buffer.cols !=
+                    P204_DEFAULT_CARLABEL_SIZE_WIDTH) || (image_buffer.rows != P204_DEFAULT_CARLABEL_SIZE_HEIGHT))
+                {
+                    resize(image_buffer, image_buffer, Size(P204_DEFAULT_CARLABEL_SIZE_WIDTH, P204_DEFAULT_CARLABEL_SIZE_HEIGHT));
+                }
+                cropped_buffer = image_buffer.colRange(56, 444).rowRange(50, 273);
+                cvtColor(cropped_buffer, grayscale_buffer, COLOR_BGR2GRAY);
+                boolean_buffer = Mat::zeros(cropped_buffer.rows, cropped_buffer.cols, CV_8UC1);
+                for (i = 0; i  != grayscale_buffer.rows; ++i) {
+                    for (j = 0; j != grayscale_buffer.cols; ++j) {
+                        if (grayscale_buffer.at<uint8_t>(i, j) <= 128) {
+                            boolean_buffer.at<uint8_t>(i, j) = 255;
+                        }
+                        else {
+                            boolean_buffer.at<uint8_t>(i, j) = 0;
+                        }
+                    }
+                }
+                imshow("GrayScale image", grayscale_buffer);
+                waitKey(0);
+                imshow("Booleam image", boolean_buffer);
+                waitKey(0);
+                destroyAllWindows();
+                imwrite(fileName_boolean, boolean_buffer);
+                cout << "Exporting the booleam image file to" << fileName_boolean << " DONE." << endl;
+            }
+        }
+
+        
+    }
     default:
         break;
     }
